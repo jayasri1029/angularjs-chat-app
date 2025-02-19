@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Reviews</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+</head>
+<body ng-app="reviewApp" ng-controller="ReviewController">
+
+    <h1>Product Reviews</h1>
+
+    <!-- Product Selection -->
+    <label for="productSelect">Select Product:</label>
+    <select id="productSelect" ng-model="product_id" ng-options="product.product_id as product.product_name for product in products" ng-change="fetchReviews()">
+        <option value="">--Select a Product--</option>
+    </select>
+
+    <h3>Leave a Review</h3>
+    <!-- Review Form -->
+    <form ng-submit="addReview()">
+        <input type="text" ng-model="newReview.user_name" placeholder="Your Name" required>
+        <input type="number" ng-model="newReview.rating" min="1" max="5" placeholder="Rating (1-5)" required>
+        <textarea ng-model="newReview.review_text" placeholder="Your Review" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3>Reviews for Product</h3>
+    
+    <button ng-click="toggleSortOrder()">Sort by Rating ({{sortOrder ? 'high-low' : 'low-high'}})</button>
+
+    <!-- Reviews Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <th>Product</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="review in reviews | orderBy:'rating':sortOrder">
+                <td>{{review.user_name}}</td>
+                <td>{{review.rating}}</td>
+                <td>{{review.review_text}}</td>
+                <td>{{review.product_name}}</td> 
+                <td>
+                    <!-- Edit Button -->
+                    <button class="btn btn-primary" ng-click="editReview(review)">Edit</button>
+
+                    <!-- Delete Button -->
+                    <button class="btn btn-danger" ng-click="deleteReview(review.review_id)">Delete</button>
+
+                    <button class="btn btn-success" ng-if="review.isEditing" ng-click="updateReview(review)">Update</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+<script src="app.js"></script>
+</html>
